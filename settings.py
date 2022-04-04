@@ -7,4 +7,4 @@ app = Flask(__name__)
 app.register_blueprint(user_service)
 app.register_blueprint(reg_service)
 
-DEBUG = True
+DEBUG = False
