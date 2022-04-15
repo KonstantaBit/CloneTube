@@ -8,7 +8,7 @@
             <p>
                 {{ form.videoName.label }}<br>
                 {{ form.videoName(class="form-control", type="videoName") }}<br>
-                {% for error in form.email.errors %}
+                {% for error in form.videoName.errors %}
                     <div class="alert alert-danger" role="alert">
                         {{ error }}
                     </div>
@@ -17,7 +17,7 @@
             <p>
                 {{ form.videoDescription.label }}<br>
                 {{ form.videoDescription(class="form-control", type="videoDescription") }}<br>
-                {% for error in form.password.errors %}
+                {% for error in form.videoDescription.errors %}
                     <div class="ale rt alert-danger" role="alert">
                         {{ error }}
                     </div>
@@ -27,7 +27,6 @@
                 <label for="photo">Chose preview</label>
                 <input type="file" class="form-control-file" id="photo" name="file">
             </div>
-            <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
             <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
             <div>{{ message }}</div>
         </form>

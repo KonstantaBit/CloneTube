@@ -14,7 +14,7 @@ creator_service_api = Api(creator_service)
 class AddVideo(Resource):
     @login_required
     def get(self):
-        form = addVideoForm
+        form = addVideoForm()
         return make_response(render_template('addVideo.html', title='Add video', form=form), 200)
 
     @login_required

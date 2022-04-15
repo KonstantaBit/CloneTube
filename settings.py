@@ -3,6 +3,7 @@ from flask import Flask
 from UserService.views import user_service
 from RegistrationService.views import reg_service
 from CreatorService.views import creator_service
+from AdminService.views import admin_service
 import db_session
 from RegistrationService.models import User
 from flask_login import LoginManager
@@ -18,6 +19,7 @@ login_manager.init_app(app)
 app.register_blueprint(user_service)
 app.register_blueprint(reg_service)
 app.register_blueprint(creator_service)
+app.register_blueprint(admin_service)
 
 @login_manager.user_loader
 def load_user(user_id):
