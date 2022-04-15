@@ -23,11 +23,8 @@ class AddVideo(Resource):
         if form.validate_on_submit():
             db_sess = db_session.create_session()
             video = Video(
-                vide=form.job.data,
-                team_leader=form.team_leader.data,
-                work_size=form.work_size.data,
-                collaborators=form.collaborators.data,
-                is_finished=form.is_finished.data
+                videoName=form.videoName.data(),
+                videoDiscription=form.videoDescription.data()
             )
             db_sess.add(video)
             db_sess.commit()
