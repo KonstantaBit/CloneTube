@@ -12,4 +12,35 @@
         <p>{{video.description}} - {{video.created_date}}</p>
     </div>
 </div>
+<hr style="height:5px">
+<h4>Добавьте комментарий:</h4>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+<div class="col mb-3" style="margin:30px 30px 0px 30px">
+    {{ form.content.label }}
+    {{ form.content(class="form-control") }}
+    {% for error in form.content.errors %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+    {% endfor %}
+</div>
+<div class="d-grid" style="margin:30px 1500px 0px 30px">
+    <button type="submit" id="submit" name="submit" value="Submit" class="btn btn-primary">Добавить комментарий</button>
+</div>
+    <hr style="height:5px">
+</form>
+<h4>Комментарии:</h4>
+{% for comment in comments%}
+    <div class="card shadow-sm" style="margin:30px 30px 0px 30px">
+        {% if current_user.id == comment.user_id%}
+            <a href="/channel/{{comment.user.id}}"><h5>Вы</h5></a>
+        {% else %}
+            <a href="/channel/{{comment.user.id}}"><h6>{{comment.user.username}}</h6></a>
+        {% endif %}
+        <div class="card-body" style="">
+            <p class="card-text">{{comment.content}}</p>
+        </div>
+    </div>
+{% endfor %}
 {% endblock %}

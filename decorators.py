@@ -6,7 +6,7 @@ def authenticated(func):
     def wrapper(*args, **kwargs):
         try:
             temp = current_user.username
-            return func(args, kwargs)
+            return func(*args, **kwargs)
         except AttributeError:
             return redirect("/", 301)
     return wrapper
