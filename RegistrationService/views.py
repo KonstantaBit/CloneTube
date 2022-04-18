@@ -29,7 +29,7 @@ class SignUp(Resource):
             db_sess.add(user)
             db_sess.commit()
             login_user(user, remember=form.remember_me.data)
-            return redirect('/feed')
+            return redirect("/", 307)
         return make_response(render_template('signup.html', form=form), 200)
 
 
@@ -45,7 +45,7 @@ class SignIn(Resource):
             user = db_sess.query(User).filter(User.username == form.username.data).first()
             if user and user.check_password(form.password.data):
                 login_user(user, remember=form.remember_me.data)
-                return redirect("/")
+                return redirect("/", 307)
             return render_template('signin.html', message="Неправильный логин или пароль", form=form)
         return make_response(render_template('signin.html', title='login', form=form))
 
@@ -53,7 +53,7 @@ class SignIn(Resource):
 class SignOut(Resource):
     def get(self):
         logout_user()
-        return redirect("/")
+        return redirect("/", 307)
 
 
 reg_service_api.add_resource(SignIn, '/signin')
