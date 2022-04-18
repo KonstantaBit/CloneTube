@@ -1,9 +1,11 @@
 from flask_wtf import FlaskForm
-from wtforms import EmailField, BooleanField, PasswordField, SubmitField, StringField, IntegerField
+from wtforms import EmailField, BooleanField, PasswordField, SubmitField, StringField, IntegerField, FileField
+from wtforms.widgets import TextArea
 from wtforms.validators import DataRequired
 
 
-class addVideoForm(FlaskForm):
-    videoName = StringField('Name of your video', validators=[DataRequired()])
-    videoDescription = StringField('Description', validators=[DataRequired()])
-    submit = SubmitField('Submit')
+class VideoAddForm(FlaskForm):
+    title = StringField('Название', validators=[DataRequired()])
+    description = StringField('Описание', widget=TextArea(), validators=[DataRequired()])
+    preview = FileField('Превью', validators=[DataRequired()])
+    content = FileField('Видео', validators=[DataRequired()])

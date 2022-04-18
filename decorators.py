@@ -8,5 +8,5 @@ def authenticated(func):
             temp = current_user.username
             return func(args, kwargs)
         except AttributeError:
-            return redirect("/", 307)
+            return redirect("/", 301)
     return wrapper

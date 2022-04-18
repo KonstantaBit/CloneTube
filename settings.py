@@ -8,8 +8,11 @@ import db_session
 from RegistrationService.models import User
 from flask_login import LoginManager
 
-app = Flask(__name__)
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
+app = Flask(__name__, static_folder='./media')
 app.config['SECRET_KEY'] = 'pivo'
+app.config['UPLOAD_FOLDER'] = './media'
 login_manager = LoginManager()
 login_manager.init_app(app)
 

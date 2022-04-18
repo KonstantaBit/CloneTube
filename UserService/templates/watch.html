@@ -2,4 +2,14 @@
 
 {% block content %}
 
+<div class="card">
+    <video width="100%" height="75%" controls>
+        <source src={{url_for('static', filename=video.content)}} type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="card-body">
+        <h3 class="card-text">{{video.title}} : <a href="/channel/{{video.user.id}}">{{video.user.username}}</a></h3>
+        <p>{{video.description}} - {{video.created_date}}</p>
+    </div>
+</div>
 {% endblock %}

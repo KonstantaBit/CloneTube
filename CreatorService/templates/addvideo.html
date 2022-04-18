@@ -1,34 +1,51 @@
 {% extends "base.html" %}
 
 {% block content %}
-        <img class="mb-4" src="/docs/5.1/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
-        <h1 class="h3 mb-3 fw-normal">Please sign up</h1>
-        <form action="" method="post" enctype="multipart/form-data">
-            {{ form.hidden_tag() }}
-            <p>
-                {{ form.videoName.label }}<br>
-                {{ form.videoName(class="form-control", type="videoName") }}<br>
-                {% for error in form.videoName.errors %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ error }}
-                    </div>
+<h2 style="text-align:center;"><strong>Создание видео</strong></h2>
+<form action="" method="post" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <div class="card bty" style="width:600px;">
+        <div class="row row-cols-2">
+            <div class="col mb-3">
+                {{ form.title.label }}
+                {{ form.title(class="form-control") }}
+                {% for error in form.title.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
                 {% endfor %}
-            </p>
-            <p>
-                {{ form.videoDescription.label }}<br>
-                {{ form.videoDescription(class="form-control", type="videoDescription") }}<br>
-                {% for error in form.videoDescription.errors %}
-                    <div class="ale rt alert-danger" role="alert">
-                        {{ error }}
-                    </div>
-                {% endfor %}
-            </p>
-            <div class="form-group">
-                <label for="photo">Chose preview</label>
-                <input type="file" class="form-control-file" id="photo" name="file">
             </div>
-            <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-            <div>{{ message }}</div>
-        </form>
+            <div class="col mb-3">
+                {{ form.content.label }}
+                {{ form.content(class="form-control", type="file", accept="video/*") }}
+                {% for error in form.content.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="col mb-3">
+                {{ form.description.label }}
+                {{ form.description(class="form-control", type="text", style="resize:none; height:200px;") }}
+                {% for error in form.description.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="col mb-3">
+                {{ form.preview.label }}
+                {{ form.preview(class="form-control", type="file", accept="image/*") }}
+                {% for error in form.preview.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="d-grid">
+            <button type="submit" id="submit" name="submit" value="Submit" class="btn btn-primary">Загрузить</button>
+        </div>
+    </div>
+</form>
 {% endblock %}
-
