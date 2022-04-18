@@ -4,5 +4,5 @@ from wtforms.validators import DataRequired
 
 
 class AddTagForm(FlaskForm):
-    content = StringField('New tag', validators=[DataRequired()])
-    submit = SubmitField('Submit')
+    content = StringField('Новый тэг', validators=[DataRequired()])
+    submit = SubmitField('Добавить')

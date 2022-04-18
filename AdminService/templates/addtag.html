@@ -1,11 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-        <img class="mb-4" src="/docs/5.1/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
-        <h1 class="h3 mb-3 fw-normal">Please sign up</h1>
-        <form action="" method="post" enctype="multipart/form-data">
-            {{ form.hidden_tag() }}
-            <p>
+<div class="addtag" style="text-align:center;">
+    <i class="bi-cloud-rain-heavy-fill" style="font-size: 3rem; color: cornflowerblue;"></i>
+</div>
+<h2 style="text-align:center;"><strong>Добавьте новый тэг, пожалуйста</strong></h2>
+<form action="" method="post" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <div class="card bty" style="width:600px;">
+        <div class="row row-cols-1">
+            <div class="col mb-3">
                 {{ form.content.label }}<br>
                 {{ form.content(class="form-control", type="content") }}<br>
                 {% for error in form.content.errors %}
@@ -13,8 +17,10 @@
                         {{ error }}
                     </div>
                 {% endfor %}
-            </p>
-            <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-            <div>{{ message }}</div>
-        </form>
+            </div>
+        </div>
+        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+        <div>{{ message }}</div>
+    </div>
+</form>
 {% endblock %}
