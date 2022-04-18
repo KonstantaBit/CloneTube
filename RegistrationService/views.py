@@ -1,17 +1,16 @@
 import flask
-from flask import Blueprint, make_response, jsonify, render_template
+from flask import Blueprint, make_response, jsonify, render_template, redirect
 from flask_restful import reqparse, abort, Api, Resource
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from .forms import LoginForm, RegisterForm
 import db_session
 from .models import User
-from werkzeug.utils import redirect
 
 reg_service = Blueprint('reg_service', __name__, template_folder='templates')
 reg_service_api = Api(reg_service)
 
 
-class SingUp(Resource):
+class SignUp(Resource):
     def get(self):
         form = RegisterForm()
         return make_response(render_template('signup.html', title='signup', form=form), 200)
@@ -20,10 +19,8 @@ class SingUp(Resource):
         form = RegisterForm()
         if form.validate_on_submit():
             db_sess = db_session.create_session()
-            if db_sess.query(User).filter(User.email == form.email.data).first():
-                return render_template('signup.html', title='signup',
-                                       form=form,
-                                       message="This user is already exist")
+            if db_sess.query(User).filter(User.username == form.username.data).first():
+                return make_response(render_template('signup.html', form=form, message="Этот логин уже существует"), 200)
             user = User(
                 username=form.username.data,
                 email=form.email.data
@@ -31,28 +28,34 @@ class SingUp(Resource):
             user.set_password(form.password.data)
             db_sess.add(user)
             db_sess.commit()
+            login_user(user, remember=form.remember_me.data)
             return redirect('/feed')
-        return make_response(render_template('signup.html', title='sighup', form=form), 200)
+        return make_response(render_template('signup.html', form=form), 200)
 
 
-class SingIn(Resource):
+class SignIn(Resource):
     def get(self):
         form = LoginForm()
-        return make_response(render_template('signin.html', title='login', form=form), 200)
+        return make_response(render_template('signin.html', form=form), 200)
 
     def post(self):
         form = LoginForm()
         if form.validate_on_submit():
             db_sess = db_session.create_session()
-            user = db_sess.query(User).filter(User.email == form.email.data).first()
+            user = db_sess.query(User).filter(User.username == form.username.data).first()
             if user and user.check_password(form.password.data):
                 login_user(user, remember=form.remember_me.data)
                 return redirect("/")
-            return render_template('login.html',
-                                   message="Неправильный логин или пароль",
-                                   form=form)
+            return render_template('signin.html', message="Неправильный логин или пароль", form=form)
         return make_response(render_template('signin.html', title='login', form=form))
 
 
-reg_service_api.add_resource(SingIn, '/signin')
-reg_service_api.add_resource(SingUp, '/signup')
+class SignOut(Resource):
+    def get(self):
+        logout_user()
+        return redirect("/")
+
+
+reg_service_api.add_resource(SignIn, '/signin')
+reg_service_api.add_resource(SignUp, '/signup')
+reg_service_api.add_resource(SignOut, '/signout')
