@@ -4,7 +4,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from werkzeug.utils import redirect, secure_filename
 from .forms import VideoAddForm
 from db_session import create_session
-from UserService.models import Video
+from UserService.models import Video, Comment
 from RegistrationService.models import User
 from decorators import authenticated
 
@@ -52,5 +52,33 @@ class Channel(Resource):
         return 'page not found', 404
 
 
+class Video_del(Resource):
+    def get(self, video_id):
+        self.delete(video_id)
+        return redirect('/feed', 301)
+
+    def delete(self, video_id):
+        db_sess = create_session()
+        video = db_sess.query(Video).get(video_id)
+        db_sess.delete(video)
+        for i in db_sess.query(Comment).filter(video_id == Comment.video_id).all():
+            db_sess.delete(i)
+        db_sess.commit()
+
+
+class Video_edit(Resource):
+    def get(self, video_id):
+        self.put(video_id)
+        return redirect('/feed', 301)
+
+    def put(self, video_id):
+        db_sess = create_session()
+        video = db_sess.query(Video).get(video_id)
+        db_sess.delete(video)
+        db_sess.commit()
+
+
 creator_service_api.add_resource(AddVideo, '/addvideo')
 creator_service_api.add_resource(Channel, '/channel/<int:channel_id>')
+creator_service_api.add_resource(Video_del, '/delete_video/<int:video_id>')
+creator_service_api.add_resource(Video_edit, '/edit_video/<int:video_id>')

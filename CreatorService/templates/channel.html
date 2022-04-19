@@ -27,6 +27,16 @@
         <div class="col border bg-light">
             <a href="/watch/{{video.id}}"><img src="{{ url_for('static', filename=video.preview)}}" width="100%" height="100%"></a>
         </div>
+        <div class="card-body" style="">
+            {% if current_user.is_stuff == 1 or current_user.id == video.user_id %}
+                <div class="col border bg-light">
+                    <a href="/delete_video/{{video.id}}">Удалить</a>
+                </div>
+                <div class="col border bg-light">
+                    <a href="/edit_video/{{video.id}}">Редактировать</a>
+                </div>
+            {% endif %}
+        </div>
         {% endfor %}
     </div>
 </div>

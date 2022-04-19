@@ -11,6 +11,14 @@
         <h3 class="card-text">{{video.title}} : <a href="/channel/{{video.user.id}}">{{video.user.username}}</a></h3>
         <p>{{video.description}} - {{video.created_date}}</p>
     </div>
+    <form action="" method="post">
+        {% if current_user.is_stuff == 1 or current_user.id == video.user_id %}
+            {{ form_1.hidden_tag() }}
+            {{ form_2.hidden_tag() }}
+            <p>{{ form_1.submit(type="submit", class="btn btn-primary") }} {{ form_2.submit(type="submit", class="btn btn-primary") }}</p>
+            <div>{{ message }}</div>
+        {% endif %}
+    </form>
 </div>
 <hr style="height:5px">
 <h4>Добавьте комментарий:</h4>
