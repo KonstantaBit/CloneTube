@@ -14,4 +14,4 @@ class VideoAddForm(FlaskForm):
 class VideoEditForm(FlaskForm):
     title = StringField('Название', validators=[DataRequired()])
     description = StringField('Описание', widget=TextArea(), validators=[DataRequired()])
-    preview = FileField('Превью', validators=[DataRequired()])
+    preview = FileField('Превью')

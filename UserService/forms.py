@@ -8,9 +8,5 @@ class CommentForm(FlaskForm):
     content = StringField('', validators=[DataRequired()])
 
 
-class DeleteForm(FlaskForm):
-    submit = SubmitField('Удалить')
-
-
 class EditForm(FlaskForm):
     submit = SubmitField('Редактировать')

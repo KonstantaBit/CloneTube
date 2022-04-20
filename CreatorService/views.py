@@ -2,11 +2,12 @@ from flask import Blueprint, make_response, jsonify, render_template
 from flask_restful import reqparse, abort, Api, Resource
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.utils import redirect, secure_filename
-from .forms import VideoAddForm
+from .forms import VideoAddForm, VideoEditForm
 from db_session import create_session
 from UserService.models import Video, Comment
 from RegistrationService.models import User
 from decorators import authenticated
+import os
 
 creator_service = Blueprint('creator_service', __name__, template_folder='templates')
 creator_service_api = Api(creator_service)
@@ -61,6 +62,8 @@ class Video_del(Resource):
         db_sess = create_session()
         video = db_sess.query(Video).get(video_id)
         db_sess.delete(video)
+        os.remove(f'./media/{video.preview}')
+        os.remove(f'./media/{video.content}')
         for i in db_sess.query(Comment).filter(video_id == Comment.video_id).all():
             db_sess.delete(i)
         db_sess.commit()
@@ -68,14 +71,27 @@ class Video_del(Resource):
 
 class Video_edit(Resource):
     def get(self, video_id):
-        self.put(video_id)
-        return redirect('/feed', 301)
-
-    def put(self, video_id):
+        form = VideoEditForm()
         db_sess = create_session()
-        video = db_sess.query(Video).get(video_id)
-        db_sess.delete(video)
+        video = db_sess.query(Video).filter(Video.id == video_id).first()
+        form.title.data = video.title
+        form.description.data = video.description
+        return make_response(render_template('editvideo.html', form=form), 200)
+
+    def post(self, video_id):
+        form = VideoEditForm()
+        db_sess = create_session()
+        video = db_sess.query(Video).filter(Video.id == video_id).first()
+        video.title = form.title.data
+        video.description = form.description.data
+        if form.preview.data:
+            os.remove(f'./media/{video.preview}')
+            file_preview = form.preview.data
+            filename_preview = secure_filename(file_preview.filename)
+            file_preview.save(f'./media/{filename_preview}')
+            video.preview = f'{filename_preview}'
         db_sess.commit()
+        return redirect('/', 301)
 
 
 creator_service_api.add_resource(AddVideo, '/addvideo')
