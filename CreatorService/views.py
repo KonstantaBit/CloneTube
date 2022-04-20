@@ -56,7 +56,7 @@ class Channel(Resource):
 class Video_del(Resource):
     def get(self, video_id):
         try:
-            if current_user.id != 1 or current_user.id != video_id.user_id:
+            if current_user.id != 1 and current_user.id != video_id.user_id:
                 return 'you have no access'
             db_sess = create_session()
             video = db_sess.query(Video).get(video_id)
@@ -65,8 +65,9 @@ class Video_del(Resource):
             for i in db_sess.query(Comment).filter(video_id == Comment.video_id).all():
                 db_sess.delete(i)
             db_sess.delete(video)
+            videos = db_sess.query(Video).all()
             db_sess.commit()
-            return make_response(render_template('feed.html'), 302)
+            return make_response(render_template('feed.html', videos=videos), 302)
         except Exception:
             return 'you have no access'
 
@@ -74,7 +75,7 @@ class Video_del(Resource):
 class Video_edit(Resource):
     def get(self, video_id):
         try:
-            if current_user.id != 1 or current_user.id != video_id.user_id:
+            if current_user.id != 1 and current_user.id != video_id.user_id:
                 return 'you have no access'
             form = VideoEditForm()
             db_sess = create_session()
