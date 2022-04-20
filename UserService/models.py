@@ -18,6 +18,7 @@ class Video(SqlAlchemyBase):
     created_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     user = orm.relation('User')
+    reference = orm.relation("Tag", secondary="association", backref="videos")
 
 
 association_table = sqlalchemy.Table(

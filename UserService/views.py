@@ -19,6 +19,14 @@ class Feed(Resource):
         return make_response(render_template('feed.html', videos=videos, tags=tags), 200)
 
 
+class TagFeed(Resource):
+    def get(self, tag_id):
+        db_sess = create_session()
+        tag = db_sess.query(Tag).filter(Tag.id == tag_id).first()
+        videos = tag.videos
+        return make_response(render_template('tagfeed.html', videos=videos, tag=tag), 200)
+
+
 class Watch(Resource):
     def get(self, video_id):
         db_sess = create_session()
@@ -64,4 +72,4 @@ class NoPath(Resource):
 user_service_api.add_resource(Feed, '/feed')
 user_service_api.add_resource(NoPath, '/')
 user_service_api.add_resource(Watch, '/watch/<int:video_id>')
-
+user_service_api.add_resource(TagFeed, '/feed/<int:tag_id>')
