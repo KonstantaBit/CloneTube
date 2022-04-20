@@ -55,25 +55,35 @@ class Channel(Resource):
 
 class Video_del(Resource):
     def get(self, video_id):
-        db_sess = create_session()
-        video = db_sess.query(Video).get(video_id)
-        os.remove(f'./media/{video.preview}')
-        os.remove(f'./media/{video.content}')
-        for i in db_sess.query(Comment).filter(video_id == Comment.video_id).all():
-            db_sess.delete(i)
-        db_sess.delete(video)
-        db_sess.commit()
-        return make_response(render_template('feed.html'), 302)
+        try:
+            if current_user.id != 1 or current_user.id != video_id.user_id:
+                return 'you have no access'
+            db_sess = create_session()
+            video = db_sess.query(Video).get(video_id)
+            os.remove(f'./media/{video.preview}')
+            os.remove(f'./media/{video.content}')
+            for i in db_sess.query(Comment).filter(video_id == Comment.video_id).all():
+                db_sess.delete(i)
+            db_sess.delete(video)
+            db_sess.commit()
+            return make_response(render_template('feed.html'), 302)
+        except Exception:
+            return 'you have no access'
 
 
 class Video_edit(Resource):
     def get(self, video_id):
-        form = VideoEditForm()
-        db_sess = create_session()
-        video = db_sess.query(Video).filter(Video.id == video_id).first()
-        form.title.data = video.title
-        form.description.data = video.description
-        return make_response(render_template('editvideo.html', form=form), 200)
+        try:
+            if current_user.id != 1 or current_user.id != video_id.user_id:
+                return 'you have no access'
+            form = VideoEditForm()
+            db_sess = create_session()
+            video = db_sess.query(Video).filter(Video.id == video_id).first()
+            form.title.data = video.title
+            form.description.data = video.description
+            return make_response(render_template('editvideo.html', form=form), 200)
+        except Exception:
+            return 'you have no access'
 
     def post(self, video_id):
         form = VideoEditForm()
