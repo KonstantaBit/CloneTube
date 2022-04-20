@@ -55,18 +55,15 @@ class Channel(Resource):
 
 class Video_del(Resource):
     def get(self, video_id):
-        self.delete(video_id)
-        return redirect('/feed', 301)
-
-    def delete(self, video_id):
         db_sess = create_session()
         video = db_sess.query(Video).get(video_id)
-        db_sess.delete(video)
         os.remove(f'./media/{video.preview}')
         os.remove(f'./media/{video.content}')
         for i in db_sess.query(Comment).filter(video_id == Comment.video_id).all():
             db_sess.delete(i)
+        db_sess.delete(video)
         db_sess.commit()
+        return make_response(render_template('feed.html'), 302)
 
 
 class Video_edit(Resource):
