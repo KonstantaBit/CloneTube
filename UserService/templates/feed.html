@@ -30,7 +30,9 @@
             <div class="p-4">
                 <h4 class="fst-italic">Тэги</h4>
                 <ol class="list-unstyled mb-0">
-                    <li><h1 href="#">WIP</h1></li>
+                    {% for tag in tags %}
+                        <li><a href="/feed/{{tag.content}}">{{ tag.content }}</a></li>
+                    {% endfor %}
                 </ol>
             </div>
         </div>

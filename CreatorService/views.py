@@ -4,7 +4,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from werkzeug.utils import redirect, secure_filename
 from .forms import VideoAddForm, VideoEditForm
 from db_session import create_session
-from UserService.models import Video, Comment
+from UserService.models import Video, Comment, Tag
 from RegistrationService.models import User
 from decorators import authenticated
 import os
@@ -66,8 +66,9 @@ class Video_del(Resource):
                 db_sess.delete(i)
             db_sess.delete(video)
             videos = db_sess.query(Video).all()
+            tags = db_sess.query(Tag).all()
             db_sess.commit()
-            return make_response(render_template('feed.html', videos=videos), 302)
+            return make_response(render_template('feed.html', videos=videos, tags=tags), 302)
         except Exception:
             return 'you have no access'
 

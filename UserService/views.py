@@ -2,7 +2,7 @@ import flask
 from flask import Blueprint, make_response, jsonify, render_template, request, redirect
 from flask_restful import reqparse, abort, Api, Resource
 from db_session import create_session
-from UserService.models import Video, Comment
+from UserService.models import Video, Comment, Tag
 from UserService.forms import CommentForm, EditForm
 from decorators import authenticated
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -15,7 +15,8 @@ class Feed(Resource):
     def get(self):
         db_sess = create_session()
         videos = db_sess.query(Video).all()
-        return make_response(render_template('feed.html', videos=videos), 200)
+        tags = db_sess.query(Tag).all()
+        return make_response(render_template('feed.html', videos=videos, tags=tags), 200)
 
 
 class Watch(Resource):

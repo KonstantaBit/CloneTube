@@ -15,7 +15,6 @@ admin_service_service_api = Api(admin_service)
 class AddTag(Resource):
     @authenticated
     def get(self):
-        print(current_user)
         if current_user.is_staff == 1:
             form = AddTagForm()
             return make_response(render_template('addtag.html', title='Add tag', form=form), 200)
