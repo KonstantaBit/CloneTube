@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="addtag" style="text-align:center;">
+    <i class="bi-cloud-rain-heavy-fill" style="font-size: 3rem; color: cornflowerblue;"></i>
+</div>
+<h2 style="text-align:center;"><strong>Удалите тэг</strong></h2>
+<form action="" method="post">
+    <div class="card bty" style="width:600px;">
+        <div class="row row-cols-1">
+            <div class="col mb-3" style="text-align:center;">
+                {{ form.tag.label }}: {{ form.tag() }}
+            </div>
+            <div class="col mb-3" style="text-align:center;">
+                <button type="submit" id="submit" name="submit" value="Submit" class="btn btn-primary">удалить</button>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

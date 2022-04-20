@@ -56,7 +56,7 @@ class Channel(Resource):
 class Video_del(Resource):
     def get(self, video_id):
         try:
-            if current_user.id != 1 and current_user.id != video_id.user_id:
+            if current_user.is_staff != 1 and current_user.id != video_id.user_id:
                 return 'you have no access'
             db_sess = create_session()
             video = db_sess.query(Video).get(video_id)
@@ -76,7 +76,7 @@ class Video_del(Resource):
 class Video_edit(Resource):
     def get(self, video_id):
         try:
-            if current_user.id != 1 and current_user.id != video_id.user_id:
+            if current_user.is_staff != 1 and current_user.id != video_id.user_id:
                 return 'you have no access'
             form = VideoEditForm()
             db_sess = create_session()

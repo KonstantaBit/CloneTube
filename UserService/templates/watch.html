@@ -12,7 +12,7 @@
         <p>{{video.description}} - {{video.created_date}}</p>
     </div>
     <form action="" method="post">
-        {% if current_user.is_stuff == 1 or current_user.id == video.user_id %}
+        {% if current_user.is_staff == 1 or current_user.id == video.user_id %}
             {{ form_2.hidden_tag() }}
             <p>{{ form_2.submit(type="submit", class="btn btn-primary") }}</p>
             <div>{{ message }}</div>
