@@ -36,7 +36,7 @@
                                 height="200"></a>
                         <div class="card-body">
                             <p class="card-text">{{video.title}}</p>
-                            {% if current_user.is_stuff == 1 or current_user.id == user.id %}
+                            {% if current_user.is_staff == 1 or current_user.id == user.id %}
                             <div class="btn-group">
                                 <a class="btn-sm btn-danger" href="/delete_video/{{video.id}}"
                                    style="text-decoration:none;">Удалить</a>
