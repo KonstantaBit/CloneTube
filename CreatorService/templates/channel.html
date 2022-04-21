@@ -1,43 +1,55 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="card bty" style="width:500px;">
+<div class="card flw" style="margin-bottom:10px;">
+    <img class="rounded" src="{{ url_for('static', filename=user.hat_photo)}}" width="100%" height="20%"
+         style="margin-bottom:10px;">
     <div class="row">
-        <div class="col">
-            <svg class="bd-placeholder-img rounded" width="140" height="140" xmlns="http://www.w3.org/2000/svg"
-                 role="img"
-                 aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>
-                Placeholder</title>
-                <rect width="100%" height="100%" fill="#777"></rect>
-            </svg>
+        <div class="col-sm-auto">
+            <input type="image" class="rounded" src="{{ url_for('static', filename=user.profile_photo)}}" width="150"
+                   height="150">
         </div>
-        <div class="col">
-            <h2 style="text-align:center;"><strong>{{user.username}}</strong></h2>
-            {% if current_user.is_authenticated %}
-            {% if current_user.id == user.id%}
-            <a class="btn btn-primary" href="/addvideo">Загрузить видео</a>
-            {% endif %}
+        <div class="col-sm-auto">
+            <h2><strong>{{user.username}}</strong></h2>
+            <p><strong>О канале : </strong>{{user.description}}</p>
+            {% if current_user.is_authenticated and current_user.id == user.id %}
+            <div class="btn-group">
+                <a class="btn btn-primary" href="/addvideo">Загрузить видео</a>
+                <form method="post" action="">
+                    <button class="btn btn-info">Сохранить изменения</button>
+                </form>
+            </div>
             {% endif %}
         </div>
     </div>
 </div>
-<div class="card gx-5 bty" style="width:600px;">
-    <div class="p-3 row row-cols-2">
-        {% for video in videos %}
-        <div class="col border bg-light">
-            <a href="/watch/{{video.id}}"><img src="{{ url_for('static', filename=video.preview)}}" width="100%" height="100%"></a>
-        </div>
-        <div class="card-body" style="">
-            {% if current_user.is_stuff == 1 or current_user.id == video.user_id %}
-                <div class="col border bg-light">
-                    <a href="/delete_video/{{video.id}}">Удалить</a>
+<div class="card flw">
+    <h3>Все видео :</h3>
+    <div class="album py-5">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                {% for video in videos %}
+                <div class="col">
+                    <div class="card">
+                        <a href="/watch/{{video.id}}"><img
+                                src="{{ url_for('static', filename=video.preview)}}" width="100%"
+                                height="200"></a>
+                        <div class="card-body">
+                            <p class="card-text">{{video.title}}</p>
+                            {% if current_user.is_stuff == 1 or current_user.id == user.id %}
+                            <div class="btn-group">
+                                <a class="btn-sm btn-danger" href="/delete_video/{{video.id}}"
+                                   style="text-decoration:none;">Удалить</a>
+                                <a class="btn-sm btn-warning" href="/edit_video/{{video.id}}"
+                                   style="text-decoration:none;"> Редактировать</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-                <div class="col border bg-light">
-                    <a href="/edit_video/{{video.id}}">Редактировать</a>
-                </div>
-            {% endif %}
+                {% endfor %}
+            </div>
         </div>
-        {% endfor %}
     </div>
 </div>
 

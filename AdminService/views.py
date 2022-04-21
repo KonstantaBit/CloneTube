@@ -34,4 +34,4 @@ class AddTag(Resource):
             return make_response(render_template('addtag.html', title='Add tag', form=form), 200)
 
 
-admin_service_service_api.add_resource(AddTag, '/addtag')
+admin_service_service_api.add_resource(AddTag, '/admin/addtag')

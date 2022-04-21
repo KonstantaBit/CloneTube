@@ -31,13 +31,10 @@ class Watch(Resource):
     def get(self, video_id):
         db_sess = create_session()
         form = CommentForm()
-        form_2 = EditForm()
         if db_sess.query(Video).filter(Video.id == video_id).first():
             video = db_sess.query(Video).filter(Video.id == video_id).first()
             comments = db_sess.query(Comment).filter(Comment.video_id == video_id).all()
-            return make_response(
-                render_template('watch.html', video=video, comments=comments, form=form, form_2=form_2),
-                200)
+            return make_response(render_template('watch.html', video=video, comments=comments, form=form), 200)
         return 'page not found', 404
 
     @authenticated

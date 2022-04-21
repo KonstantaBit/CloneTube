@@ -2,52 +2,54 @@
 
 {% block content %}
 
-<div class="card">
+<div class="card bty" style="margin-bottom:10px;">
     <video width="100%" height="75%" controls>
         <source src={{url_for('static', filename=video.content)}} type="video/mp4">
         Your browser does not support the video tag.
     </video>
     <div class="card-body">
-        <h3 class="card-text">{{video.title}} : <a href="/channel/{{video.user.id}}">{{video.user.username}}</a></h3>
+        <h3 class="card-text">{{video.title}} : <a style="text-decoration:none;" href="/channel/{{video.user.id}}">{{video.user.username}}</a>
+        </h3>
         <p>{{video.description}} - {{video.created_date}}</p>
     </div>
+</div>
+<div class="card bty" style="margin-bottom:10px;">
+    <h4>Добавьте комментарий:</h4>
     <form action="" method="post">
-        {% if current_user.is_stuff == 1 or current_user.id == video.user_id %}
-            {{ form_2.hidden_tag() }}
-            <p>{{ form_2.submit(type="submit", class="btn btn-primary") }}</p>
-            <div>{{ message }}</div>
-        {% endif %}
+        {{ form.hidden_tag() }}
+        <div class="col mb-3">
+            {{ form.content.label }}
+            {{ form.content(class="form-control") }}
+            {% for error in form.content.errors %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="d-grid">
+            <button type="submit" id="submit" name="submit" value="Submit" class="btn btn-primary">Добавить комментарий
+            </button>
+        </div>
     </form>
 </div>
-<hr style="height:5px">
-<h4>Добавьте комментарий:</h4>
-<form action="" method="post">
-    {{ form.hidden_tag() }}
-<div class="col mb-3" style="margin:30px 30px 0px 30px">
-    {{ form.content.label }}
-    {{ form.content(class="form-control") }}
-    {% for error in form.content.errors %}
-        <div class="alert alert-danger" role="alert">
-            {{ error }}
+<div class="card bty">
+    <h4>Комментарии:</h4>
+    {% for comment in comments %}
+    <div class="card bty" style="">
+        <div class="row">
+            <div class="col-sm-auto">
+                <img class="rounded-circle" src={{url_for('static', filename=comment.user.profile_photo)}} width="50" height="50">
+            </div>
+            <div class="col-sm-auto">
+                {% if current_user.id == comment.user_id%}
+                <a href="/channel/{{comment.user.id}}"><h5>Вы</h5></a>
+                {% else %}
+                <a href="/channel/{{comment.user.id}}"><h6>{{comment.user.username}}</h6></a>
+                {% endif %}
+            </div>
         </div>
-    {% endfor %}
-</div>
-<div class="d-grid" style="margin:30px 1500px 0px 30px">
-    <button type="submit" id="submit" name="submit" value="Submit" class="btn btn-primary">Добавить комментарий</button>
-</div>
-    <hr style="height:5px">
-</form>
-<h4>Комментарии:</h4>
-{% for comment in comments%}
-    <div class="card shadow-sm" style="margin:30px 30px 0px 30px">
-        {% if current_user.id == comment.user_id%}
-            <a href="/channel/{{comment.user.id}}"><h5>Вы</h5></a>
-        {% else %}
-            <a href="/channel/{{comment.user.id}}"><h6>{{comment.user.username}}</h6></a>
-        {% endif %}
-        <div class="card-body" style="">
-            <p class="card-text">{{comment.content}}</p>
-        </div>
+        <p class="card-text">{{comment.content}}</p>
     </div>
+</div>
 {% endfor %}
 {% endblock %}

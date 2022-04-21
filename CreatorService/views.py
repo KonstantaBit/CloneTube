@@ -25,16 +25,16 @@ class AddVideo(Resource):
         if form.validate_on_submit():
             file_preview = form.preview.data
             filename_preview = secure_filename(file_preview.filename)
-            file_preview.save(f'./media/{filename_preview}')
+            file_preview.save(f'./files/media/{filename_preview}')
             file_content = form.content.data
             filename_content = secure_filename(file_content.filename)
-            file_content.save(f'./media/{filename_content}')
+            file_content.save(f'./files/media/{filename_content}')
             db_sess = create_session()
             video = Video(
                 title=form.title.data,
                 description=form.description.data,
-                content=f'{filename_content}',
-                preview=f'{filename_preview}',
+                content=f'media/{filename_content}',
+                preview=f'media/{filename_preview}',
                 user_id=current_user.id
             )
             db_sess.add(video)
@@ -60,8 +60,8 @@ class Video_del(Resource):
                 return 'you have no access'
             db_sess = create_session()
             video = db_sess.query(Video).get(video_id)
-            os.remove(f'./media/{video.preview}')
-            os.remove(f'./media/{video.content}')
+            os.remove(f'./files/media/{video.preview}')
+            os.remove(f'./files/media/{video.content}')
             for i in db_sess.query(Comment).filter(video_id == Comment.video_id).all():
                 db_sess.delete(i)
             db_sess.delete(video)
@@ -94,10 +94,10 @@ class Video_edit(Resource):
         video.title = form.title.data
         video.description = form.description.data
         if form.preview.data:
-            os.remove(f'./media/{video.preview}')
+            os.remove(f'./files/media/{video.preview}')
             file_preview = form.preview.data
             filename_preview = secure_filename(file_preview.filename)
-            file_preview.save(f'./media/{filename_preview}')
+            file_preview.save(f'./files/media/{filename_preview}')
             video.preview = f'{filename_preview}'
         db_sess.commit()
         return redirect('/', 301)

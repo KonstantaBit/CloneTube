@@ -45,7 +45,7 @@ class SignIn(Resource):
             if user and user.check_password(form.password.data):
                 login_user(user, remember=form.remember_me.data)
                 return redirect("/", 301)
-            return  make_response(render_template('signin.html', message="Неправильный логин или пароль", form=form))
+            return make_response(render_template('signin.html', message="Неправильный логин или пароль", form=form))
         return make_response(render_template('signin.html', form=form))
 
 
