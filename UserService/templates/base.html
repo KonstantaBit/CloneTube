@@ -47,6 +47,14 @@
                         <a class="nav-link" href="/signup">Зарегистрироваться</a>
                     </li>
                     {% endif %}
+                    {% if current_user.is_staff == 1 %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/addtag">Добавить тэг</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/deletetag">Удалить тэг</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
