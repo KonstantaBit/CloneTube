@@ -33,15 +33,6 @@
                 </div>
                 {% endfor %}
             </div>
-            <div class="col mb-3">
-                {{ form.preview.label }}
-                {{ form.preview(class="form-control", type="file", accept="image/*") }}
-                {% for error in form.preview.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
-                {% endfor %}
-            </div>
         </div>
         <div class="d-grid">
             <button type="submit" id="submit" name="submit" value="Submit" class="btn btn-primary">Загрузить</button>
