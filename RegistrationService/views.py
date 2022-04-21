@@ -1,8 +1,9 @@
 from flask import Blueprint, make_response, render_template, redirect
-from flask_restful import reqparse, abort, Api, Resource
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from .forms import LoginForm, RegisterForm
+from flask_login import login_user, logout_user
+from flask_restful import Api, Resource
+
 from db_session import create_session
+from .forms import LoginForm, RegisterForm
 from .models import User
 
 reg_service = Blueprint('reg_service', __name__, template_folder='templates')
@@ -19,7 +20,8 @@ class SignUp(Resource):
         if form.validate_on_submit():
             db_sess = create_session()
             if db_sess.query(User).filter(User.username == form.username.data).first():
-                return make_response(render_template('signup.html', form=form, message="Этот логин уже существует"), 200)
+                return make_response(render_template('signup.html', form=form, message="Этот логин уже существует"),
+                                     200)
             user = User(
                 username=form.username.data,
                 email=form.email.data

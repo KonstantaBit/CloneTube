@@ -8,5 +8,5 @@ class CommentForm(FlaskForm):
     content = StringField('', validators=[DataRequired()])
 
 
-class EditForm(FlaskForm):
-    submit = SubmitField('Редактировать')
+class ProfileEdit(FlaskForm):
+    hat_photo = SubmitField('Редактировать')

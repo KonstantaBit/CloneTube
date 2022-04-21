@@ -2,7 +2,7 @@ from flask import Blueprint, make_response, jsonify, render_template
 from flask_restful import reqparse, abort, Api, Resource
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.utils import redirect, secure_filename
-from .forms import VideoAddForm, VideoEditForm
+from .forms import VideoAddForm, VideoEditForm, ProfileEdit
 from db_session import create_session
 from UserService.models import Video, Comment, Tag
 from RegistrationService.models import User
@@ -25,17 +25,16 @@ class AddVideo(Resource):
         if form.validate_on_submit():
             file_preview = form.preview.data
             filename_preview = secure_filename(file_preview.filename)
-            os.mkdir(f'./files/media/{form.title.data}')
-            file_preview.save(f'./files/media/{form.title.data}/{filename_preview}')
+            file_preview.save(f'./files/media/{filename_preview}')
             file_content = form.content.data
             filename_content = secure_filename(file_content.filename)
-            file_content.save(f'./files/media/{form.title.data}/{filename_content}')
+            file_content.save(f'./files/media/{filename_content}')
             db_sess = create_session()
             video = Video(
                 title=form.title.data,
                 description=form.description.data,
-                content=f'media/{form.title.data}/{filename_content}',
-                preview=f'media/{form.title.data}/{filename_preview}',
+                content=f'media/{filename_content}',
+                preview=f'media/{filename_preview}',
                 user_id=current_user.id
             )
             db_sess.add(video)
@@ -48,30 +47,47 @@ class Channel(Resource):
     def get(self, channel_id):
         db_sess = create_session()
         if db_sess.query(User).filter(User.id == channel_id).first():
+            form = ProfileEdit()
             channel = db_sess.query(User).filter(User.id == channel_id).first()
             videos = db_sess.query(Video).filter(Video.user_id == channel_id).all()
-            return make_response(render_template('channel.html', user=channel, videos=videos), 200)
+            return make_response(render_template('channel.html', user=channel, videos=videos, form=form), 200)
+        return 'page not found', 404
+
+    def post(self, channel_id):
+        db_sess = create_session()
+        if db_sess.query(User).filter(User.id == channel_id).first():
+            form = ProfileEdit()
+            if form.validate_on_submit():
+                file_hat_photo = form.hat_photo.data
+                filename_hat_photo = secure_filename(file_hat_photo.filename)
+                file_hat_photo.save(f'./files/media/{filename_hat_photo}')
+                file_profile_photo = form.profile_photo.data
+                filename_profile_photo = secure_filename(file_profile_photo.filename)
+                file_profile_photo.save(f'./files/media/{filename_profile_photo}')
+                usr = db_sess.query(User).filter(User.id == current_user.id).first()
+                usr.hat_photo = f'media/{filename_hat_photo}'
+                usr.profile_photo = f'media/{filename_profile_photo}'
+                db_sess.commit()
+            return redirect('')
         return 'page not found', 404
 
 
 class Video_del(Resource):
     def get(self, video_id):
         try:
+            if current_user.is_staff != 1 and current_user.id != video_id.user_id:
+                return 'you have no access'
             db_sess = create_session()
-            videoi = db_sess.query(Video).filter(Video.id == video_id).first()
-            if current_user.is_staff == 1 or current_user.id == videoi.user_id:
-                video = db_sess.query(Video).get(video_id)
-                os.remove(f'./files/{video.preview}')
-                os.remove(f'./files/{video.content}')
-                os.rmdir(f"./files/media/{video.title}")
-                for i in db_sess.query(Comment).filter(video_id == Comment.video_id).all():
-                    db_sess.delete(i)
-                db_sess.delete(video)
-                videos = db_sess.query(Video).all()
-                tags = db_sess.query(Tag).all()
-                db_sess.commit()
-                return make_response(render_template('feed.html', videos=videos, tags=tags), 302)
-            return  'you have no access'
+            video = db_sess.query(Video).get(video_id)
+            os.remove(f'./files/media/{video.preview}')
+            os.remove(f'./files/media/{video.content}')
+            for i in db_sess.query(Comment).filter(video_id == Comment.video_id).all():
+                db_sess.delete(i)
+            db_sess.delete(video)
+            videos = db_sess.query(Video).all()
+            tags = db_sess.query(Tag).all()
+            db_sess.commit()
+            return make_response(render_template('feed.html', videos=videos, tags=tags), 302)
         except Exception:
             return 'you have no access'
 
@@ -79,16 +95,14 @@ class Video_del(Resource):
 class Video_edit(Resource):
     def get(self, video_id):
         try:
+            if current_user.is_staff != 1 and current_user.id != video_id.user_id:
+                return 'you have no access'
+            form = VideoEditForm()
             db_sess = create_session()
-            videoi = db_sess.query(Video).filter(Video.id == video_id).first()
-            if current_user.is_staff == 1 or current_user.id == videoi.user_id:
-                form = VideoEditForm()
-                db_sess = create_session()
-                video = db_sess.query(Video).filter(Video.id == video_id).first()
-                form.title.data = video.title
-                form.description.data = video.description
-                return make_response(render_template('editvideo.html', form=form), 200)
-            return 'you have no access'
+            video = db_sess.query(Video).filter(Video.id == video_id).first()
+            form.title.data = video.title
+            form.description.data = video.description
+            return make_response(render_template('editvideo.html', form=form), 200)
         except Exception:
             return 'you have no access'
 
@@ -99,11 +113,11 @@ class Video_edit(Resource):
         video.title = form.title.data
         video.description = form.description.data
         if form.preview.data:
-            os.remove(f'./files/{video.preview}')
+            os.remove(f'./files/media/{video.preview}')
             file_preview = form.preview.data
             filename_preview = secure_filename(file_preview.filename)
-            file_preview.save(f'./files/media/{video.title}/{filename_preview}')
-            video.preview = f'media/{video.title}/{filename_preview}'
+            file_preview.save(f'./files/media/{filename_preview}')
+            video.preview = f'{filename_preview}'
         db_sess.commit()
         return redirect('/', 301)
 

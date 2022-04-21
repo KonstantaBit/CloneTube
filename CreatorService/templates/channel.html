@@ -13,12 +13,29 @@
             <h2><strong>{{user.username}}</strong></h2>
             <p><strong>О канале : </strong>{{user.description}}</p>
             {% if current_user.is_authenticated and current_user.id == user.id %}
-            <div class="btn-group">
-                <a class="btn btn-primary" href="/addvideo">Загрузить видео</a>
-                <form method="post" action="">
-                    <button class="btn btn-info">Сохранить изменения</button>
-                </form>
-            </div>
+            <a class="btn btn-primary" href="/addvideo">Загрузить видео</a>
+            {% endif %}
+        </div>
+        <div class="col-sm-auto">
+            {% if current_user.is_authenticated and current_user.id == user.id %}
+            <form method="post" action="" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                {{ form.hat_photo.label }}
+                {{ form.hat_photo(class="form-control", type="file", accept="image/*")}}
+                {% for error in form.hat_photo.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+                {{ form.profile_photo.label }}
+                {{ form.profile_photo(class="form-control", type="file", accept="image/*")}}
+                {% for error in form.profile_photo.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+                <button type="submit" id="submit" name="submit" value="Submit" class="btn btn-info">Сохранить изменения</button>
+            </form>
             {% endif %}
         </div>
     </div>
@@ -52,5 +69,4 @@
         </div>
     </div>
 </div>
-
 {% endblock %}

@@ -11,8 +11,13 @@ class VideoAddForm(FlaskForm):
     content = FileField('Видео', validators=[DataRequired()])
 
 
-
 class VideoEditForm(FlaskForm):
     title = StringField('Название', validators=[DataRequired()])
     description = StringField('Описание', widget=TextArea(), validators=[DataRequired()])
     preview = FileField('Превью')
+
+
+class ProfileEdit(FlaskForm):
+    hat_photo = FileField('Шапка')
+    profile_photo = FileField('Аватарка')
+

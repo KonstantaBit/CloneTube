@@ -3,7 +3,7 @@ from flask import Blueprint, make_response, jsonify, render_template, request, r
 from flask_restful import reqparse, abort, Api, Resource
 from db_session import create_session
 from UserService.models import Video, Comment, Tag
-from UserService.forms import CommentForm, EditForm
+from UserService.forms import CommentForm
 from decorators import authenticated
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
@@ -43,7 +43,6 @@ class Watch(Resource):
         form = CommentForm()
         video = db_sess.query(Video).filter(Video.id == video_id).first()
         comments = db_sess.query(Comment).filter(Comment.video_id == video_id).all()
-        form_2 = EditForm()
         if form.validate_on_submit():
             video = db_sess.query(Video).filter(Video.id == video_id).first()
             comments = db_sess.query(Comment).filter(Comment.video_id == video_id).all()
