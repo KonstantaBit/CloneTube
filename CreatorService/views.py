@@ -75,12 +75,14 @@ class Channel(Resource):
 class Video_del(Resource):
     def get(self, video_id):
         try:
-            if current_user.is_staff != 1 and current_user.id != video_id.user_id:
+            db_sess = create_session()
+            videor = db_sess.query(Video).filter(Video.id == video_id)
+            if current_user.is_staff != 1 and current_user.id != videor.user_id:
                 return 'you have no access'
             db_sess = create_session()
             video = db_sess.query(Video).get(video_id)
-            os.remove(f'./files/media/{video.preview}')
-            os.remove(f'./files/media/{video.content}')
+            os.remove(f'./files/{video.preview}')
+            os.remove(f'./files/{video.content}')
             for i in db_sess.query(Comment).filter(video_id == Comment.video_id).all():
                 db_sess.delete(i)
             db_sess.delete(video)
@@ -95,7 +97,9 @@ class Video_del(Resource):
 class Video_edit(Resource):
     def get(self, video_id):
         try:
-            if current_user.is_staff != 1 and current_user.id != video_id.user_id:
+            db_sess = create_session()
+            videor = db_sess.query(Video).filter(Video.id == video_id)
+            if current_user.is_staff != 1 and current_user.id != videor.user_id:
                 return 'you have no access'
             form = VideoEditForm()
             db_sess = create_session()
@@ -113,10 +117,10 @@ class Video_edit(Resource):
         video.title = form.title.data
         video.description = form.description.data
         if form.preview.data:
-            os.remove(f'./files/media/{video.preview}')
+            os.remove(f'./files/{video.preview}')
             file_preview = form.preview.data
             filename_preview = secure_filename(file_preview.filename)
-            file_preview.save(f'./files/media/{filename_preview}')
+            file_preview.save(f'./files/{filename_preview}')
             video.preview = f'{filename_preview}'
         db_sess.commit()
         return redirect('/', 301)
